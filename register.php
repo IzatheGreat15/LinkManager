@@ -8,7 +8,6 @@ if(isset($_SESSION["id"])){
 ?>
 <!DOCTYPE html>
 <html lang="en">
-
 <head>
     <meta charset="UTF-8">
     <meta http-equiv="X-UA-Compatible" content="IE=edge">
@@ -20,7 +19,6 @@ if(isset($_SESSION["id"])){
     <script src="https://cdn.tailwindcss.com"></script>
 
 </head>
-
 <body>
     <!-- ERROR MESSAGES -->
     <?php
@@ -37,10 +35,10 @@ if(isset($_SESSION["id"])){
         }
     }
     ?>
-    <div class="bg-blue-400 h-screen w-full flex items-center justify-center">
+    <div class="bg-purple-400 h-screen w-full flex items-center justify-center">
         <div class="w-3/4 lg:w-1/2">
             <!-- FORM -->
-            <form action="backend/login.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+            <form action="backend/register.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
                 <p class="text-red-500 text-xs italic"><?= $error ?></p>
                 <br>
                 <div class="mb-4">
@@ -57,10 +55,10 @@ if(isset($_SESSION["id"])){
                 </div>
                 <div class="flex items-center justify-between">
                     <button class="bg-blue-500 hover:bg-blue-700 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" name="submit">
-                        Login
+                        Register
                     </button>
-                    <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="register.php">
-                        Create an Account?
+                    <a class="inline-block align-baseline font-bold text-sm text-blue-500 hover:text-blue-800" href="login.php">
+                        Already have an Account?
                     </a>
                 </div>
             </form>
@@ -70,5 +68,4 @@ if(isset($_SESSION["id"])){
         </div>
     </div>
 </body>
-
 </html>
