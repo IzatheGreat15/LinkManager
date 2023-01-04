@@ -17,6 +17,8 @@ if(isset($_SESSION["id"])){
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
+    <!-- Include CDN JavaScript -->
+    <script src="https://unpkg.com/tailwindcss-jit-cdn"></script>
 
 </head>
 <body>
@@ -35,7 +37,7 @@ if(isset($_SESSION["id"])){
         }
     }
     ?>
-    <div class="bg-purple-400 h-screen w-full flex items-center justify-center">
+    <div class="bg-[#1a202e] h-screen w-full flex items-center justify-center">
         <div class="w-3/4 lg:w-1/2">
             <!-- FORM -->
             <form action="backend/register.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">

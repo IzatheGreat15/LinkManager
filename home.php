@@ -3,7 +3,6 @@ session_start();
 include_once('backend/database/initial_db_config.php');
 include_once('backend/general_functions.php');
 
-
 // if user is already loggged in, redirect to home page
 if (!isset($_SESSION["id"])) {
     header('location: login.php');
@@ -11,6 +10,7 @@ if (!isset($_SESSION["id"])) {
 } else {
     $user = user_exists($conn, $_SESSION["username"]);
 }
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -109,7 +109,7 @@ if (!isset($_SESSION["id"])) {
         <!-- NAVBAR -->
         <nav class="bg-blue-500 h-10 w-full flex items-center p-5 justify-between text-white">
             <div class="font-semibold">Hi, <?= $user["username"] ?>!</div>
-            <a href="#">
+            <a href="backend/logout.php">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                     <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M17 16l4-4m0 0l-4-4m4 4H7m6 4v1a3 3 0 01-3 3H6a3 3 0 01-3-3V7a3 3 0 013-3h4a3 3 0 013 3v1"></path>
                 </svg>
