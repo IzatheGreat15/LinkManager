@@ -11,6 +11,33 @@ if (!isset($_SESSION["id"])) {
     $user = user_exists($conn, $_SESSION["username"]);
 }
 
+$message = "";
+$color = "green";
+// SUCCESS MESSAGES
+if(isset($_GET["success"])){
+    $message = "<br>";
+
+    if($_GET["success"] == "linkadded"){
+        $message = $message . "Link successfully added";
+    }
+    if($_GET["success"] == "linkupdated"){
+        $message = $message . "Link successfully updated";
+    }
+    if($_GET["success"] == "linkdeleted"){
+        $message = $message . "Link successfully deleted";
+    }
+}
+
+// ERROR MESSAGES
+if(isset($_GET["error"])){
+    $message = "<br>";
+    $color = "red";
+
+    if($_GET["error"] == "emptyfields"){
+        $message = $message . "Please fill in all the fields";
+    }
+}
+
 ?>
 <!DOCTYPE html>
 <html lang="en">
@@ -54,7 +81,6 @@ if (!isset($_SESSION["id"])) {
         <div class="w-3/4 lg:w-1/2 modal-body">
             <!-- FORM -->
             <form action="backend/crud_links.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <p class="text-red-500 text-xs italic"></p>
                 <br>
                 <div class="mb-4">
                     <input type="hidden" name="mode">
@@ -108,9 +134,9 @@ if (!isset($_SESSION["id"])) {
         </div>
     </div>
 
-    <div class="flex flex-col">
+    <div class="flex flex-col h-screen w-screen">
         <!-- NAVBAR -->
-        <nav class="bg-blue-500 h-10 w-full flex items-center p-5 justify-between text-white">
+        <nav class="bg-blue-500 h-10 w-screen flex items-center p-5 px-10 justify-between text-white fixed">
             <div class="font-semibold">Hi, <?= $user["username"] ?>!</div>
             <a href="backend/logout.php">
                 <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
@@ -119,14 +145,23 @@ if (!isset($_SESSION["id"])) {
             </a>
         </nav>
 
-        <!-- LEFT -->
-        <div class="h-screen w-full flex flex-col lg:flex-row items-center justify-center">
+        
+        <div class="h-screen w-screen flex flex-col lg:flex-row items-center justify-center mt-10">
+            <!-- LEFT -->
             <div class="bg-[#1a202e] h-full w-full text-white flex flex-col items-start justify-start p-10 outline outline-offset-0 outline-1 outline-sky-100">
-                <button id="add" class="outline outline-offset-2 outline-blue-500 hover:bg-blue-500 outline-1 flex justify-between rounded-lg px-5 py-1">
-                    <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
-                    </svg>
-                </button>
+
+                <div class="flex w-full justify-between sm:flex-row">
+                <!-- <input class="shadow appearance-none border rounded w-full sm:w-1/4 py-2 px-3 mr-5 text-gray-700 leading-tight focus:outline-none focus:shadow-outline" id="name" type="text" name="name" placeholder="Search"> -->
+
+                    <button id="add" class="outline outline-offset-2 outline-blue-500 hover:bg-blue-500 outline-1 flex justify-between rounded-lg px-5 py-1">
+                        <svg class="w-6 h-6" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M12 6v6m0 0v6m0-6h6m-6 0H6"></path>
+                        </svg>
+                    </button>
+                </div>
+                
+                <!-- ERROR MESSAGE -->
+                <p class="text-<?= $color ?>-500 italic"><?= $message ?></p>
                 <br>
 
                 <table class="w-full">
@@ -134,7 +169,7 @@ if (!isset($_SESSION["id"])) {
                         <th>Name</th>
                         <th>Link</th>
                         <th>Time</th>
-                        <th class="w-24"></th>
+                        <th class="w-12 sm:w-24"></th>
                     </tr>
 
                     <?php
@@ -150,7 +185,7 @@ if (!isset($_SESSION["id"])) {
                                 <td class="p-3 text-center ellipsis"><?= $row["link"] ?></td>
                                 <td class="p-3 text-center hidden"><?= $row["open_at"] ?></td>
                                 <td class="p-3 text-center"><?= date("h:i A", strtotime($row["open_at"])) ?></td>
-                                <td class="p-3 w-24 flex justify-between">
+                                <td class="p-3 w-12 flex flex-col sm:w-24 sm:flex-row justify-between">
                                     <svg class="w-6 h-6 hover:stroke-blue-500 edit" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
                                         <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
                                     </svg>
@@ -170,14 +205,14 @@ if (!isset($_SESSION["id"])) {
 
             <!-- RIGHT -->
             <div class="bg-[#1a202e] h-full w-full text-white flex flex-col items-start justify-start p-10 outline outline-offset-0 outline-1 outline-sky-100">
-                <div class="flex justify-between w-full">
+                <div class="flex flex-col justify-start w-full sm:justify-between sm:flex-row">
                     <h1 class="text-2xl font-semibold tracking-wider">Queue</h1>
-                    <h1 class="text-md tracking-wider">Time left for CIS 3102: <span id="#time-left">01:30:00</span></h1>
+                    <h1 class="text-md tracking-wider time-info">Time left for <span id="current">CIS 3102</span>: <span id="time-left">01:30:00</span></h1>
                 </div>
 
                 <br>
 
-                <table class="w-full">
+                <table class="w-full" id="queue">
                     <tr class=" bg-blue-500 p3 outline outline-offset-0 outline-1 outline-blue-500">
                         <th>Name</th>
                         <th>Link</th>
@@ -197,6 +232,88 @@ if (!isset($_SESSION["id"])) {
 </body>
 
 <script>
+    var flag = 0;
+
+    $(document).ready((e) => {
+        update_queue();
+    });
+
+    function open_link(link) {
+        var win = window.open(link, '_blank');
+        if (win) {
+            //Browser has allowed it to be opened
+            win.focus();
+        } else {
+            //Browser has blocked it
+            alert('Please allow popups for this website');
+        }
+    }
+
+    function check_timer() {
+        var time = $("#queue").find("tr:eq(1)").find("td:eq(2)").text();
+        var link = $("#queue").find("tr:eq(1)").find("td:eq(1)").text();
+
+        $.ajax({
+            type: "GET",
+            url: "backend/timer.php",
+            data: {
+                time: time
+            },
+            success: (data) => {
+                $("#time-left").text(data);
+
+                if (data === "00:00:00" && flag == 0) {
+                    open_link(link);
+                    flag = 1;
+                    update_queue();
+                }
+            }
+        });
+    }
+
+    setInterval(check_timer, 1000);
+
+    function update_queue() {
+        flag = 0;
+        $.ajax({
+            type: "GET",
+            url: "backend/get_queue.php",
+            success: (data) => {
+                console.log(data);
+                data = JSON.parse(data);
+                var append = '<tr class=" bg-blue-500 p3 outline outline-offset-0 outline-1 outline-blue-500">' +
+                    '<th>Name</th>' +
+                    '<th>Link</th>' +
+                    '<th>Time</th>' +
+                    '</tr>';
+
+                if (data.length > 0) {
+                    $.each(data, (key, value) => {
+                        append += '<tr class="outline outline-offset-0 outline-1 outline-blue-500">' +
+                            '<td class="p-3 text-center">' + value.name + '</td>' +
+                            '<td class="p-3 text-center ellipsis hover:text-blue-500">' +
+                            '<a href="' + value.link + '" target="_blank" rel="noopener noreferrer">' + value.link + '</a>' +
+                            '</td>' +
+                            '<td class="p-3 text-center">' + value.open_at + '</td>' +
+                            '</tr>';
+                    });
+                } else {
+                    append += '<tr class="outline outline-offset-0 outline-1 outline-blue-500">' +
+                        '<td class="p-3 text-center" colspan="4">No links added yet!</td>' +
+                        '</tr>';
+                    $(".time-info").hide();
+                }
+                $("#queue").empty();
+                $("#queue").html(append);
+
+                var first = $("#queue").find("tr:eq(1)").find("td:eq(0)").text();
+                $("#current").text(first);
+
+                check_timer();
+            }
+        });
+    }
+
     /* CLOSING OF THE MODAL */
     // close the modal using the close button and when outside the modal is clicked
     $(".close, .modal-bg").click(function() {
@@ -215,14 +332,14 @@ if (!isset($_SESSION["id"])) {
      * -1 => delete
      *  */
     // OPENING OF MODAL
-    $("#add").click((e) => {
+    $(document).on("click", "#add", (e) => {
         $("#modal").css('display', 'flex');
 
         $("input").val('');
         $("input[name='mode']").val(0);
     });
 
-    $(".edit").click((e) => {
+    $(document).on("click", ".edit", (e) => {
         $("#modal").css('display', 'flex');
 
         var id = $(e.currentTarget).parent("td").parent("tr").find("td:eq(0)").text();
@@ -236,7 +353,7 @@ if (!isset($_SESSION["id"])) {
         $("input[name='time']").val(time);
     });
 
-    $(".delete").click((e) => {
+    $(document).on("click", ".delete", (e) => {
         var name = $(e.currentTarget).parent("td").parent("tr").find("td:eq(1)").text();
         var id = $(e.currentTarget).parent("td").parent("tr").find("td:eq(0)").text();
 
