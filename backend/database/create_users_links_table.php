@@ -7,12 +7,12 @@ $sql = "CREATE TABLE IF NOT EXISTS user_links(
     CONSTRAINT FK_UserID FOREIGN KEY (user_id) REFERENCES users(id) ON DELETE CASCADE ON UPDATE CASCADE
 )";
 
-$query = "ALTER TABLE orders 
+$query = "ALTER TABLE user_links 
                 ADD CONSTRAINT FK_LinkID
-                FOREIGN KEY IF NOT EXISTS(link_id) REFERENCES link(id) 
+                FOREIGN KEY IF NOT EXISTS(link_id) REFERENCES links(id) 
                 ON DELETE CASCADE ON UPDATE CASCADE";
 
-if ($conn->query($sql) === TRUE) {
+if ($conn->query($sql) === TRUE && $conn->query($query) === TRUE) {
     echo "\nTable user_links created successfully";
 } else {
     echo "\nError creating table: " . $conn->error;

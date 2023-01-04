@@ -28,12 +28,12 @@ if(isset($_POST["submit"])){
 
     $sql->bind_param('ss', $username, $password);
 
-    // start session
-    $_SESSION["id"] = $conn->insert_id;
-    $_SESSION["username"] = $username;
-
     if($sql->execute()){
         // success
+        // start session
+        $_SESSION["id"] = $conn->insert_id;
+        $_SESSION["username"] = $username;
+
         header('location: ../home.php');
         exit();
     }else{

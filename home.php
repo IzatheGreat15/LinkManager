@@ -53,10 +53,11 @@ if (!isset($_SESSION["id"])) {
     <div class="bg-stone-700/75 h-screen w-screen flex items-center justify-center fixed z-10 modal-bg hidden" id="modal">
         <div class="w-3/4 lg:w-1/2 modal-body">
             <!-- FORM -->
-            <form action="backend/login.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
-                <p class="text-red-500 text-xs italic"><?= $error ?></p>
+            <form action="backend/crud_links.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4">
+                <p class="text-red-500 text-xs italic"></p>
                 <br>
                 <div class="mb-4">
+                    <input type="hidden" name="mode">
                     <label class="block text-gray-700 text-sm font-bold mb-2" for="name">
                         Name
                     </label>
@@ -75,7 +76,7 @@ if (!isset($_SESSION["id"])) {
                     <input class="shadow appearance-none border rounded w-full py-2 px-3 text-gray-700 mb-3 leading-tight focus:outline-none focus:shadow-outline" id="time" type="time" name="time" placeholder="******************">
                 </div>
                 <div class="flex items-center justify-center">
-                    <button class="bg-blue-500 hover:bg-blue-700 text-white w-1/2 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" name="submit">
+                    <button class="bg-blue-500 hover:bg-blue-700 text-white w-1/2 font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" name="submit" value="Submit">
                         Save
                     </button>
                 </div>
@@ -87,13 +88,15 @@ if (!isset($_SESSION["id"])) {
     <div class="bg-stone-700/75 h-screen w-full flex items-center justify-center fixed z-10 modal-bg hidden" id="modal-delete">
         <div class="w-3/4 lg:w-1/2 modal-body">
             <!-- FORM -->
-            <form action="backend/login.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col justify-center">
+            <form action="backend/crud_links.php" method="POST" class="bg-white shadow-md rounded px-8 pt-6 pb-8 mb-4 flex flex-col justify-center">
+                <input type="hidden" name="mode">
+                <input type="hidden" name="id">
                 <br>
                 <p class="text-center text-xl font-semibold">Are you sure you want to delete <span id="link_name"></span>?</p>
                 <br>
                 <br>
                 <div class="flex items-center justify-center">
-                    <button class="bg-red-500 hover:bg-red-700 w-1/4 mx-2 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" name="submit">
+                    <button class="bg-red-500 hover:bg-red-700 w-1/4 mx-2 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline" type="submit" name="submit" value="Submit">
                         Yes
                     </button>
                     <button class="bg-green-500 hover:bg-green-700 w-1/4 mx-2 text-white font-bold py-2 px-4 rounded focus:outline-none focus:shadow-outline close" type="button" name="submit">
@@ -133,25 +136,45 @@ if (!isset($_SESSION["id"])) {
                         <th>Time</th>
                         <th class="w-24"></th>
                     </tr>
-                    <tr class="outline outline-offset-0 outline-1 outline-blue-500">
-                        <td class="p-3 text-center">Jose Rizal</td>
-                        <td class="p-3 text-center ellipsis">https://tailwindcss.com/docs/outline-color</td>
-                        <td class="p-3 text-center">1:20 AM</td>
-                        <td class="p-3 w-24 flex justify-between">
-                            <svg class="w-6 h-6 hover:stroke-blue-500 edit" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
-                            </svg>
-                            <svg class="w-6 h-6 hover:stroke-blue-500 delete" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
-                                <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
-                            </svg>
-                        </td>
-                    </tr>
+
+                    <?php
+                    $query = "SELECT links.* FROM links JOIN user_links ON user_links.link_id = links.id WHERE user_links.user_id = " . $_SESSION["id"];
+                    $result = $conn->query($query);
+
+                    if ($result->num_rows > 0) :
+                    ?>
+                        <?php foreach ($result as $row) : ?>
+                            <tr class="outline outline-offset-0 outline-1 outline-blue-500">
+                                <td class="p-3 text-center hidden"><?= $row["id"] ?></td>
+                                <td class="p-3 text-center"><?= $row["name"] ?></td>
+                                <td class="p-3 text-center ellipsis"><?= $row["link"] ?></td>
+                                <td class="p-3 text-center hidden"><?= $row["open_at"] ?></td>
+                                <td class="p-3 text-center"><?= date("h:i A", strtotime($row["open_at"])) ?></td>
+                                <td class="p-3 w-24 flex justify-between">
+                                    <svg class="w-6 h-6 hover:stroke-blue-500 edit" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M11 5H6a2 2 0 00-2 2v11a2 2 0 002 2h11a2 2 0 002-2v-5m-1.414-9.414a2 2 0 112.828 2.828L11.828 15H9v-2.828l8.586-8.586z"></path>
+                                    </svg>
+                                    <svg class="w-6 h-6 hover:stroke-blue-500 delete" fill="none" stroke="currentColor" viewBox="0 0 24 24" xmlns="http://www.w3.org/2000/svg">
+                                        <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 7l-.867 12.142A2 2 0 0116.138 21H7.862a2 2 0 01-1.995-1.858L5 7m5 4v6m4-6v6m1-10V4a1 1 0 00-1-1h-4a1 1 0 00-1 1v3M4 7h16"></path>
+                                    </svg>
+                                </td>
+                            </tr>
+                        <?php endforeach ?>
+                    <?php else : ?>
+                        <tr class="outline outline-offset-0 outline-1 outline-blue-500">
+                            <td class="p-3 text-center" colspan="4">No links added yet!</td>
+                        </tr>
+                    <?php endif ?>
                 </table>
             </div>
 
             <!-- RIGHT -->
             <div class="bg-[#1a202e] h-full w-full text-white flex flex-col items-start justify-start p-10 outline outline-offset-0 outline-1 outline-sky-100">
-                <h1 class="text-2xl font-semibold tracking-wider">Queue</h1>
+                <div class="flex justify-between w-full">
+                    <h1 class="text-2xl font-semibold tracking-wider">Queue</h1>
+                    <h1 class="text-md tracking-wider">Time left for CIS 3102: <span id="#time-left">01:30:00</span></h1>
+                </div>
+
                 <br>
 
                 <table class="w-full">
@@ -185,19 +208,43 @@ if (!isset($_SESSION["id"])) {
         e.stopPropagation();
     })
 
+    /**
+     * mode of operations
+     * 0 => add
+     * actual ID of entry => edit
+     * -1 => delete
+     *  */
     // OPENING OF MODAL
     $("#add").click((e) => {
         $("#modal").css('display', 'flex');
+
+        $("input").val('');
+        $("input[name='mode']").val(0);
     });
 
     $(".edit").click((e) => {
         $("#modal").css('display', 'flex');
+
+        var id = $(e.currentTarget).parent("td").parent("tr").find("td:eq(0)").text();
+        var name = $(e.currentTarget).parent("td").parent("tr").find("td:eq(1)").text();
+        var link = $(e.currentTarget).parent("td").parent("tr").find("td:eq(2)").text();
+        var time = $(e.currentTarget).parent("td").parent("tr").find("td:eq(3)").text();
+
+        $("input[name='mode']").val(id);
+        $("input[name='name']").val(name);
+        $("input[name='link']").val(link);
+        $("input[name='time']").val(time);
     });
 
     $(".delete").click((e) => {
-        var name = $(e.currentTarget).parent("td").parent("tr").find("td:eq(0)").text();
+        var name = $(e.currentTarget).parent("td").parent("tr").find("td:eq(1)").text();
+        var id = $(e.currentTarget).parent("td").parent("tr").find("td:eq(0)").text();
+
         $("#link_name").text(name);
         $("#modal-delete").css('display', 'flex');
+
+        $("input[name='mode']").val(-1);
+        $("input[name='id']").val(id);
     });
 </script>
 
