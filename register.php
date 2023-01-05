@@ -14,6 +14,8 @@ if(isset($_SESSION["id"])){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
 
     <title>LinkManager</title>
+    <!-- ICON -->
+    <link rel="icon" type="image/png" href="link.png"/>
 
     <!-- Tailwind CSS -->
     <script src="https://cdn.tailwindcss.com"></script>
